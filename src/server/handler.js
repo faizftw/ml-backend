@@ -12,18 +12,18 @@ async function postPredictHandler(request, h) {
         const createdAt = new Date().toISOString();
 
         const data = {
-            "id": id,
-            "result": label,
-            "suggestion": suggestion,
-            "createdAt": createdAt
-        }
+            id: id,
+            result: label,
+            suggestion: suggestion,
+            createdAt: createdAt,
+        };
 
         await storeData(id, data);
 
         const response = h.response({
             status: 'success',
-            message: 'Model is predicted successfully.',
-            data
+            message: 'Model has predicted successfully.',
+            data,
         });
         response.code(201);
         return response;
@@ -38,15 +38,15 @@ async function postPredictHandler(request, h) {
 
 async function getAllDataHandler(request, h) {
     try {
-      const data = await getAllData();
-      const response = h.response({
-        status: 'success',
-        data,
-      });
-      return response;
+        const data = await getAllData();
+        const response = h.response({
+            status: 'success',
+            data,
+        });
+        return response;
     } catch (error) {
-      throw new InputError('Terjadi kesalahan dalam mengambil data', 500);
+        throw new InputError('Terjadi kesalahan dalam mengambil data', 500);
     }
-  }
-  
-  module.exports = { postPredictHandler, getAllDataHandler };
+}
+
+module.exports = { postPredictHandler, getAllDataHandler };
