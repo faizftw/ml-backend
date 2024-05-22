@@ -1,6 +1,16 @@
 const { Firestore } = require('@google-cloud/firestore');
 
- 
+async function getAllData() {
+  const db = new Firestore();
+  const predictCollection = db.collection('prediction');
+  const snapshot = await predictCollection.get();
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    history: doc.data(),
+  }));
+  return data;
+}
+
 async function storeData(id, data) {
   const db = new Firestore();
  
@@ -8,4 +18,4 @@ async function storeData(id, data) {
   return predictCollection.doc(id).set(data);
 }
  
-module.exports = storeData;
+module.exports = {storeData, getAllData} ;

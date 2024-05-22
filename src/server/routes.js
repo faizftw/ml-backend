@@ -1,4 +1,6 @@
 const postPredictHandler = require('../server/handler');
+const getAllDataHandler = require('../server/handler');
+
  
 const routes = [
   {
@@ -12,6 +14,11 @@ const routes = [
         maxBytes: 1000000,
       }
     }
+  },
+  {
+    path: '/predict/histories',
+    method: 'GET',
+    handler: getAllDataHandler, 
   }
 ]
  

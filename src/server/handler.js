@@ -1,6 +1,6 @@
 const predictClassification = require('../services/inferenceService');
 const crypto = require('crypto');
-const storeData = require('../services/storeData');
+const { storeData, getAllData } = require('../services/storeData');
 
 async function postPredictHandler(request, h) {
     const { image } = request.payload;
@@ -36,4 +36,17 @@ async function postPredictHandler(request, h) {
     }
 }
 
-module.exports = postPredictHandler;
+async function getAllDataHandler(request, h) {
+    try {
+      const data = await getAllData();
+      const response = h.response({
+        status: 'success',
+        data,
+      });
+      return response;
+    } catch (error) {
+      throw new InputError('Terjadi kesalahan dalam mengambil data', 500);
+    }
+  }
+  
+  module.exports = { postPredictHandler, getAllDataHandler };
