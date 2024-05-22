@@ -1,5 +1,5 @@
-const postPredictHandler = require('../server/handler');
-const getAllDataHandler = require('../server/handler');
+const postPredictHandler = require('../server/handler').postPredictHandler;
+const getAllDataHandler = require('../server/handler').getAllDataHandler;;
 
  
 const routes = [
