@@ -5,25 +5,27 @@ async function postPredictHandler(request, h) {
     const { image } = request.payload;
     const { model } = request.server.app;
 
-    if (image._data.length > 1000000) {
-        return h.response({
+    // Check if image size is greater than 1MB
+    if (Buffer.byteLength(image) > 1000000) {
+        const response = h.response({
             status: 'fail',
             message: 'Payload content length greater than maximum allowed: 1000000'
-        }).code(413);
+        });
+        response.code(413);
+        return response;
     }
 
     try {
-        const { label, suggestion } = await predictClassification(model, image._data);
+        const { label, suggestion } = await predictClassification(model, image);
         const id = crypto.randomUUID();
         const createdAt = new Date().toISOString();
 
         const data = {
-            id,
-            result: label,
-            suggestion,
-            createdAt
-        };
-
+            "id": id,
+            "result": label,
+            "suggestion": suggestion,
+            "createdAt": createdAt
+        }
         const response = h.response({
             status: 'success',
             message: 'Model is predicted successfully.',
@@ -32,7 +34,7 @@ async function postPredictHandler(request, h) {
         response.code(201);
         return response;
     } catch (error) {
-        throw new InputError(`Terjadi kesalahan dalam melakukan prediksi`);
+        throw new InputError('Terjadi kesalahan dalam melakukan prediksi');
     }
 }
 

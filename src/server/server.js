@@ -11,7 +11,7 @@ const InputError = require('../exceptions/InputError');
         host: '0.0.0.0',
         routes: {
             cors: {
-              origin: ['*'],
+                origin: ['*'],
             },
         },
     });
@@ -28,15 +28,15 @@ const InputError = require('../exceptions/InputError');
             const newResponse = h.response({
                 status: 'fail',
                 message: `${response.message} Silakan gunakan foto lain.`
-            });
-            newResponse.code(response.statusCode);
+            })
+            newResponse.code(response.statusCode)
             return newResponse;
         }
 
         if (response.isBoom) {
             const newResponse = h.response({
                 status: 'fail',
-                message: response.output.payload.message
+                message: 'Terjadi kesalahan dalam melakukan prediksi'
             });
             newResponse.code(response.output.statusCode);
             return newResponse;
