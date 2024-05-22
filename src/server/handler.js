@@ -5,16 +5,6 @@ async function postPredictHandler(request, h) {
     const { image } = request.payload;
     const { model } = request.server.app;
 
-    // Check if image size is greater than 1MB
-    if (Buffer.byteLength(image) > 1000000) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Payload content length greater than maximum allowed: 1000000'
-        });
-        response.code(413);
-        return response;
-    }
-
     try {
         const { label, suggestion } = await predictClassification(model, image);
         const id = crypto.randomUUID();
@@ -34,7 +24,11 @@ async function postPredictHandler(request, h) {
         response.code(201);
         return response;
     } catch (error) {
-        throw new InputError('Terjadi kesalahan dalam melakukan prediksi');
+        if (error.message.includes('Payload content length greater than maximum allowed')) {
+            throw new InputError('Payload content length greater than maximum allowed: 1000000', 413);
+        } else {
+            throw new InputError('Terjadi kesalahan dalam melakukan prediksi', 400);
+        }
     }
 }
 
