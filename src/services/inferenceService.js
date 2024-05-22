@@ -1,6 +1,8 @@
 const tf = require('@tensorflow/tfjs-node');
+const InputError = require('../exceptions/InputError');
  
 async function predictClassification(model, image) {
+  try {
     const tensor = tf.node
     .decodeJpeg(image)
     .resizeNearestNeighbor([224, 224])
@@ -22,7 +24,10 @@ async function predictClassification(model, image) {
         suggestion = "Anda aman"
       }
 
-      return {label, suggestion };
+      return { confidenceScore, label, explanation, suggestion };
+    } catch (error) {
+        throw new InputError(`Terjadi kesalahan input: ${error.message}`)
+    }
 }
 
 module.exports = predictClassification;
