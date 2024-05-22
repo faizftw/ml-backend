@@ -11,11 +11,8 @@ const InputError = require('../exceptions/InputError');
         host: '0.0.0.0',
         routes: {
             cors: {
-                origin: ['*'],
+              origin: ['*'],
             },
-            payload: {
-                maxBytes: 1000000 
-            }
         },
     });
 
@@ -37,15 +34,9 @@ const InputError = require('../exceptions/InputError');
         }
 
         if (response.isBoom) {
-            let message = 'Terjadi kesalahan dalam melakukan prediksi';
-
-            if (response.output.statusCode === 413) {
-                message = 'Payload content length greater than maximum allowed: 1000000';
-            }
-
             const newResponse = h.response({
                 status: 'fail',
-                message: message
+                message: response.output.payload.message
             });
             newResponse.code(response.output.statusCode);
             return newResponse;

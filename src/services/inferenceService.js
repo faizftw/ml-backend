@@ -1,13 +1,13 @@
 const tf = require('@tensorflow/tfjs-node');
 const InputError = require('../exceptions/InputError');
- 
+
 async function predictClassification(model, image) {
   try {
     const tensor = tf.node
-    .decodeJpeg(image)
-    .resizeNearestNeighbor([224, 224])
-    .expandDims()
-    .toFloat()
+      .decodeJpeg(image)
+      .resizeNearestNeighbor([224, 224])
+      .expandDims()
+      .toFloat();
 
     const prediction = model.predict(tensor);
     const classes = ['Cancer', 'Non-cancer'];
@@ -17,17 +17,17 @@ async function predictClassification(model, image) {
     let suggestion;
 
     if (label === 'Cancer') {
-        suggestion = "Segera periksa ke dokter!"
-      }
-     
-    if (label === 'Non-cancer') {
-        suggestion = "Anda aman"
-      }
-
-      return { confidenceScore, label, explanation, suggestion };
-    } catch (error) {
-        throw new InputError(`Terjadi kesalahan input: ${error.message}`)
+        suggestion = "Segera periksa ke dokter!";
     }
+
+    if (label === 'Non-cancer') {
+        suggestion = "Anda aman";
+    }
+
+    return { label, suggestion };
+  } catch (error) {
+    throw new InputError(`Terjadi kesalahan dalam melakukan prediksi: ${error.message}`);
+  }
 }
 
 module.exports = predictClassification;

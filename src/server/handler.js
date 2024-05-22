@@ -3,6 +3,7 @@ const crypto = require('crypto');
 
 async function postPredictHandler(request, h) {
     const { image } = request.payload;
+    const { model } = request.server.app;
 
     if (image._data.length > 1000000) {
         return h.response({
@@ -11,18 +12,16 @@ async function postPredictHandler(request, h) {
         }).code(413);
     }
 
-    const { model } = request.server.app;
-
     try {
         const { label, suggestion } = await predictClassification(model, image._data);
         const id = crypto.randomUUID();
         const createdAt = new Date().toISOString();
 
         const data = {
-            id: id,
+            id,
             result: label,
-            suggestion: suggestion,
-            createdAt: createdAt
+            suggestion,
+            createdAt
         };
 
         const response = h.response({
@@ -33,7 +32,7 @@ async function postPredictHandler(request, h) {
         response.code(201);
         return response;
     } catch (error) {
-        throw new InputError('Terjadi kesalahan dalam melakukan prediksi');
+        throw new InputError(`Terjadi kesalahan dalam melakukan prediksi`);
     }
 }
 
